@@ -7,7 +7,7 @@ from sendgrid.helpers.mail import (
 from sendgrid import SendGridAPIClient
 
 message = Mail(
-    from_email='from_email@example.com',
+    from_email='thilo@colabel.com',
     to_emails='to@example.com',
     subject='Sending with Twilio SendGrid is Fun',
     html_content='<strong>and easy to do anywhere, even with Python</strong>')
@@ -44,4 +44,4 @@ def add(x, y):
 
 @app.task
 def bulk_predict(csv_file, email):
-
+    pass
