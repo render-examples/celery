@@ -1,9 +1,19 @@
 import os
+import zipfile
 from flask import Flask, flash, render_template, redirect, request
 from tasks import add
 
+
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', "super-secret")
+
+# sentiment: https://www.dropbox.com/s/bgljpmn90u7v91n/model_files.zip?dl=1 / raw=1?
+# purchase intent: https://www.dropbox.com/s/bgljpmn90u7v91n/model_files.zip?dl=1
+
+# download model_files
+
+
+
 
 
 @app.route('/')

@@ -1,8 +1,15 @@
 celery==4.3.0
-Flask==1.0.2
 flower==0.9.3
-gunicorn==19.9.0
 redis==3.2.1
+sendgrid==6.1.3
+simpletransformers==0.21.4
+aiofiles==0.4.0
+aiohttp==3.5.4
+asyncio==3.4.3
+python-multipart==0.0.5
+starlette==0.12.0
+uvicorn==0.7.1
+ujson==2.0.1
 
 # NOTE: Kombu 4.6.5 results in a build failure. Bumping down to 4.6.4
 #       See this github issue: https://github.com/celery/kombu/issues/1063
