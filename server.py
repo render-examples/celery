@@ -35,12 +35,13 @@ async def setup_model():
 
 loop = asyncio.get_event_loop()
 tasks = [asyncio.ensure_future(setup_model())]
-learn = loop.run_until_complete(asyncio.gather(*tasks))[0]
+model = loop.run_until_complete(asyncio.gather(*tasks))[0]
 loop.close()
 
 
 @app.route('/')
 async def hello_world(request):
+    prediction = model.predict(['I like this product very much'])
     return UJSONResponse({'hello': 'world'})
 
 
