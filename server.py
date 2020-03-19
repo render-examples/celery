@@ -38,14 +38,29 @@ tasks = [asyncio.ensure_future(setup_model())]
 model = loop.run_until_complete(asyncio.gather(*tasks))[0]
 loop.close()
 
-
-@app.route('/')
-async def hello_world(request):
-    prediction = model.predict(['I like this product very much'])
-    return UJSONResponse({'hello': 'world'})
+label_mapping = {"0": 0, "1": 1}
 
 
-# @app.route('/analyze', methods=['POST'])
+@app.route('/predict')
+async def predict(request):
+    data = request.json()['data']
+
+    instances = model.predict(data)[1].tolist()
+
+    results = []
+    for i, instance_scores in enumerate(instances):
+
+        predictions = []
+        for j, score in enumerate(instance_scores):
+            predictions.append({'class': label_mapping[str(j)], 'score': score})
+        predictions = sorted(predictions, key=lambda k: k['score'], reverse=True)
+
+        results.append({'text': data[i], 'predictions': predictions})
+
+    return UJSONResponse({'results': results})
+
+
+# @app.route('/bulk-predict', methods=['POST'])
 # async def analyze(request):
 #     img_data = await request.form()
 #     img_bytes = await (img_data['file'].read())
