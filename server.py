@@ -8,9 +8,13 @@ from starlette.responses import UJSONResponse
 from starlette.staticfiles import StaticFiles
 from simpletransformers.classification import ClassificationModel
 import zipfile
+import os
 
-export_file_url = 'https://www.dropbox.com/s/bgljpmn90u7v91n/model_files.zip?raw=1'
+export_file_url = os.getenv('MODEL_DROPBOX_LINK')
 export_file_name = 'model_files.zip'
+
+# sentiment: https://www.dropbox.com/s/bgljpmn90u7v91n/model_files.zip?raw=1
+# purchase intent: https://www.dropbox.com/s/bgljpmn90u7v91n/model_files.zip?raw=1
 
 app = Starlette()
 app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_headers=['X-Requested-With', 'Content-Type'])
