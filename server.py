@@ -13,11 +13,9 @@ import os
 export_file_url = os.getenv('MODEL_DROPBOX_LINK')
 export_file_name = 'model_files.zip'
 
-# sentiment: https://www.dropbox.com/s/bgljpmn90u7v91n/model_files.zip?raw=1
-# purchase intent: https://www.dropbox.com/s/bgljpmn90u7v91n/model_files.zip?raw=1
 
 app = Starlette()
-app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_headers=['X-Requested-With', 'Content-Type'])
+app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_headers=['*'], allow_methods=['*'])
 
 
 async def download_file(url, dest):
