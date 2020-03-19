@@ -41,9 +41,9 @@ loop.close()
 label_mapping = {"0": 0, "1": 1}
 
 
-@app.route('/predict')
+@app.route('/predict', methods=['POST'])
 async def predict(request):
-    data = request.json()['data']
+    data = await request.json()['data']
 
     instances = model.predict(data)[1].tolist()
 
