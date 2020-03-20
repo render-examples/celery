@@ -1,7 +1,7 @@
 import aiohttp
 import asyncio
 import uvicorn
-from io import BytesIO
+from io import BytesIO, StringIO
 from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import UJSONResponse
@@ -9,6 +9,8 @@ from starlette.staticfiles import StaticFiles
 from simpletransformers.classification import ClassificationModel
 import zipfile
 import os
+from tasks import bulk_predict
+import csv
 
 export_file_url = os.getenv('MODEL_DROPBOX_LINK')
 export_file_name = 'model_files.zip'
@@ -63,13 +65,19 @@ async def predict(request):
     return UJSONResponse({'results': results})
 
 
-# @app.route('/bulk-predict', methods=['POST'])
-# async def analyze(request):
-#     img_data = await request.form()
-#     img_bytes = await (img_data['file'].read())
-#     img = open_image(BytesIO(img_bytes))
-#     prediction = learn.predict(img)[0]
-#     return JSONResponse({'result': str(prediction)})
+@app.route('/bulk-predict', methods=['POST'])
+async def bulk_prediction(request):
+    form = await request.form()
+    contents = await form['file'].read()
+
+    reader = csv.reader(StringIO(contents.decode()))
+    data = []
+    for row in reader:
+        data.append(row[0])
+
+    bulk_predict(model, data, 'thilo.huellmann@gmail.com')
+
+    return UJSONResponse({'message': 'data queued'})
 
 
 if __name__ == '__main__':

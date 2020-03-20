@@ -12,9 +12,6 @@ app.secret_key = os.getenv('FLASK_SECRET_KEY', "super-secret")
 # download model_files
 
 
-
-
-
 @app.route('/')
 def main():
     return render_template('main.html')
