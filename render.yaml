@@ -1,0 +1,43 @@
+services:
+  - type: worker
+    name: queue
+    region: ohio
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A tasks worker -l info"
+    envVars:
+      - key: CELERY_BROKER_URL
+        fromService:
+          name: celery-redis
+          type: redis
+          property: connectionString
+  - type: web
+    name: app
+    region: ohio
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    envVars:
+      - key: CELERY_BROKER_URL
+        fromService:
+          name: celery-redis
+          type: redis
+          property: connectionString
+  - type: web
+    name: flower
+    region: ohio
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery flower -A tasks -l info"
+    envVars:
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: celery-redis
+          property: connectionString
+  - type: redis
+    name: celery-redis
+    region: ohio
+    plan: starter 
+    maxmemoryPolicy: noeviction # recommended policy for queues
+    ipAllowList: [] # only allow internal connections
