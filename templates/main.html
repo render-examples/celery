@@ -8,6 +8,15 @@
     <div class="row align-items-center justify-content-center">
         <div class="col">
             <h1 class="mb-5">Asynchronous addition using Celery!</h1>
+						<div class="row my-3">
+								{% with messages = get_flashed_messages() %}
+								{% if messages %}
+								{% for message in messages %}
+								<div class="alert alert-info">{{ message }}</div>
+								{% endfor %}
+								{% endif %}
+								{% endwith %}
+						</div>
             <form action="/add" method="POST" class="form-inline">
                 <div class="form-group">
                     <label for="x">X</label>
@@ -19,17 +28,6 @@
                 </div>
                 <button class="btn btn-primary" type="submit">Add X and Y</button>
             </form>
-        </div>
-    </div>
-    <div class="row my-3">
-        <div class="col">
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-info">{{ message }}</div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
         </div>
     </div>
 </div>
