@@ -4,7 +4,7 @@ services:
     region: ohio
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "celery -A tasks worker -l info"
+    startCommand: "celery --app tasks worker --loglevel info --concurrency 4"
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
@@ -26,9 +26,10 @@ services:
   - type: web
     name: flower
     region: ohio
+    plan: free
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "celery flower -A tasks -l info"
+    startCommand: "celery flower --app tasks --loglevel info"
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
