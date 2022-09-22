@@ -5,6 +5,7 @@ services:
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "celery --app tasks worker --loglevel info --concurrency 4"
+    autoDeploy: false
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
@@ -17,6 +18,7 @@ services:
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn app:app"
+    autoDeploy: false
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
@@ -30,6 +32,7 @@ services:
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "celery flower --app tasks --loglevel info"
+    autoDeploy: false
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
@@ -40,5 +43,6 @@ services:
     name: celery-redis
     region: ohio
     plan: starter # we choose a plan with persistence to ensure tasks are not lost upon restart
+    autoDeploy: false
     maxmemoryPolicy: noeviction # recommended policy for queues
     ipAllowList: [] # only allow internal connections
