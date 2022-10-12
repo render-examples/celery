@@ -43,6 +43,5 @@ services:
     name: celery-redis
     region: ohio
     plan: starter # we choose a plan with persistence to ensure tasks are not lost upon restart
-    autoDeploy: false
     maxmemoryPolicy: noeviction # recommended policy for queues
     ipAllowList: [] # only allow internal connections
