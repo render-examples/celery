@@ -22,7 +22,7 @@ prometheus-client==0.14.1
 prompt-toolkit==3.0.29
 pyparsing==3.0.8
 pytz==2022.1
-redis==4.2.2
+redis==4.5.3
 six==1.16.0
 tornado==6.1
 typing-extensions==4.1.1
