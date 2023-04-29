@@ -22,7 +22,7 @@ services:
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
-          name: celery-redis
+          name: zenn-queue-redis
           type: redis
           property: connectionString
   - type: web
@@ -37,7 +37,7 @@ services:
       - key: CELERY_BROKER_URL
         fromService:
           type: redis
-          name: celery-redis
+          name: zenn-queue-redis
           property: connectionString
   - type: redis
     name: zenn-queue-redis
