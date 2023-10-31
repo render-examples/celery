@@ -1,6 +1,6 @@
 services:
   - type: worker
-    name: queue
+    name: zenn-worker
     region: ohio
     env: python
     buildCommand: "pip install -r requirements.txt"
@@ -9,38 +9,38 @@ services:
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
-          name: celery-redis
+          name: zenn-queue-redis
           type: redis
           property: connectionString
   - type: web
-    name: app
+    name: zenn-queue
     region: ohio
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn app:app"
-    autoDeploy: false
+    autoDeploy: true
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
-          name: celery-redis
+          name: zenn-queue-redis
           type: redis
           property: connectionString
   - type: web
-    name: flower
+    name: zenn-queue-ui
     region: ohio
     plan: free
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "celery flower --app tasks --loglevel info"
-    autoDeploy: false
+    autoDeploy: true
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
           type: redis
-          name: celery-redis
+          name: zenn-queue-redis
           property: connectionString
   - type: redis
-    name: celery-redis
+    name: zenn-queue-redis
     region: ohio
     plan: starter # we choose a plan with persistence to ensure tasks are not lost upon restart
     maxmemoryPolicy: noeviction # recommended policy for queues

@@ -1,0 +1,4 @@
+tasks.log
+.vscode/*
+.env
+.venv/*
