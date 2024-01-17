@@ -1,6 +1,6 @@
 services:
   - type: worker
-    name: queue
+    name: celery-worker
     region: ohio
     runtime: python
     buildCommand: "pip install -r requirements.txt"
