@@ -2,7 +2,7 @@ services:
   - type: worker
     name: queue
     region: ohio
-    env: python
+    runtime: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "celery --app tasks worker --loglevel info --concurrency 4"
     autoDeploy: false
@@ -15,7 +15,7 @@ services:
   - type: web
     name: app
     region: ohio
-    env: python
+    runtime: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn app:app"
     autoDeploy: false
@@ -29,7 +29,7 @@ services:
     name: flower
     region: ohio
     plan: free
-    env: python
+    runtime: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "celery flower --app tasks --loglevel info"
     autoDeploy: false
