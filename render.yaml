@@ -1,7 +1,7 @@
 services:
   - type: worker
-    name: celery-worker
-    region: ohio
+    name: tempoai-celery-worker
+    region: oregon
     runtime: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "celery --app tasks worker --loglevel info --concurrency 4"
@@ -9,12 +9,12 @@ services:
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
-          name: celery-redis
+          name: tempo-celery-redis
           type: redis
           property: connectionString
   - type: web
     name: app
-    region: ohio
+    region: oregon
     runtime: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn app:app"
@@ -22,26 +22,26 @@ services:
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
-          name: celery-redis
+          name: tempo-celery-redis
           type: redis
           property: connectionString
   - type: web
-    name: flower
-    region: ohio
+    name: tempoai-flower
+    region: oregon
     plan: free
     runtime: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "celery flower --app tasks --loglevel info"
+    startCommand: "celery --app tasks flower --loglevel=info"
     autoDeploy: false
     envVars:
       - key: CELERY_BROKER_URL
         fromService:
           type: redis
-          name: celery-redis
+          name: tempoai-celery-redis
           property: connectionString
   - type: redis
-    name: celery-redis
-    region: ohio
+    name: tempoai-celery-redis
+    region: oregon
     plan: starter # we choose a plan with persistence to ensure tasks are not lost upon restart
     maxmemoryPolicy: noeviction # recommended policy for queues
     ipAllowList: [] # only allow internal connections
