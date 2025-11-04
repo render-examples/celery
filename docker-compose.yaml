@@ -1,0 +1,83 @@
+services:
+  celery_scrap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: celery_scrap
+    command:
+      [
+        "celery",
+        "-A",
+        "app.main",
+        "worker",
+        "--loglevel=INFO",
+        "--logfile=/logs/worker.log",
+      ]
+    volumes:
+      - ./logs:/logs
+    env_file: .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      # redis:
+      #   condition: service_started
+    networks:
+      - jobsearch_network
+    healthcheck:
+      test: ["CMD", "celery", "-A", "app.main", "status"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+  flower_scrap:
+    image: mher/flower
+    container_name: flower_scrap
+    env_file: .env
+    environment:
+      - CELERY_BROKER_URL=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_URL}:5672//
+    ports:
+      - "5556:5555"
+    depends_on:
+      rabbitmq:
+        condition: service_started
+    networks:
+      - jobsearch_network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # RabbitMQ
+      - "15672:15672" # Management interface
+    env_file: .env
+    restart: always
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - jobsearch_network
+
+  # redis:
+  #   image: redis:latest
+  #   container_name: redis
+  #   ports:
+  #     - 6379:6379
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 5s
+  #     timeout: 30s
+  #     retries: 50
+  #   restart: always
+  #   networks:
+  #     - jobsearch_network
+
+# ---------- VOLUMES ----------
+volumes:
+  logs:
+
+networks:
+  jobsearch_network:
+    external: true
+    name: jobsearch_network

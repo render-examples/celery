@@ -1,0 +1,7 @@
+.git
+__pycache__/
+*.pyc
+.env
+logs/
+# si uv.lock n'est pas utilisé, ne pas l'ignorer
+# *.lock
