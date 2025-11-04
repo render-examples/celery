@@ -1,0 +1,11 @@
+[project]
+name = "wt-celery"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "amqp>=5.3.1",
+    "celery>=5.5.3",
+    "flower>=2.0.1",
+]
