@@ -1,17 +1,45 @@
 services:
-  
+  celery:
+    build:
+      context: ./celery/.
+      dockerfile: Dockerfile
+    container_name: celery
+    command:
+      [
+        "celery",
+        "-A",
+        "app.main",
+        "worker",
+        "--loglevel=INFO",
+        "--logfile=/logs/worker.log",
+      ]
+    volumes:
+      - ./logs:/logs
+    env_file: .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - reporting
+    healthcheck:
+      test: ["CMD", "celery", "-A", "app.main", "status"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
 
-  flower_scrap:
+  flower:
     image: mher/flower
-    container_name: flower_scrap
+    container_name: flower
+    env_file: .env
     environment:
-      - CELERY_BROKER_URL=amqp://admin:admin@rabbitmq:5672//
+      - CELERY_BROKER_URL=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_URL}:5672//
     ports:
       - "5556:5555"
     depends_on:
       rabbitmq:
         condition: service_started
-    
+    networks:
+      - reporting
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -19,8 +47,22 @@ services:
     ports:
       - "5672:5672" # RabbitMQ
       - "15672:15672" # Management interface
-    environment:
-      RABBITMQ_URL: rabbitmq
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin
+    env_file: .env
     restart: always
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # networks:
+    #   - reporting
+
+  
+# ---------- VOLUMES ----------
+# volumes:
+#   logs:
+
+# networks:
+#   reporting:
+#     external: true
+#     name: reporting
